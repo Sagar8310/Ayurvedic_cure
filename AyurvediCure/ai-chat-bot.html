@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="TechWave" />
+    <meta name="author" content="Frenify" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <link href="img/ayruvedi.png" rel="icon" />
+    <link href="img/ayruvedi.png" rel="AyruvediCure" />
+    <title>AI Doctor - AyurvediCure</title>
+
+    <script>
+      if (!localStorage.frenify_skin) {
+        localStorage.frenify_skin = "light";
+      }
+      if (!localStorage.frenify_panel) {
+        localStorage.frenify_panel = "";
+      }
+      document.documentElement.setAttribute(
+        "data-techwave-skin",
+        localStorage.frenify_skin
+      );
+      if (localStorage.frenify_panel !== "") {
+        document.documentElement.classList.add(localStorage.frenify_panel);
+      }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Heebo:wght@100;200;300;400;500;600;700;800;900&amp;family=Work+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+      rel="stylesheet"
+    />
+    <!-- !Google Fonts -->
+
+    <!-- Styles -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="css/plugins8a54.css?ver=1.0.0"
+    />
+    <link type="text/css" rel="stylesheet" href="css/style8a54.css?ver=1.0.0" />
+    <style>
+      /* Chat container */
+      .chat__list {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+        background-color: #f7f7f7;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* User message box */
+      .user__message {
+        background-color: #0084ff;
+        color: white;
+        border-radius: 12px;
+        padding: 12px;
+        margin: 10px 0;
+        max-width: 75%;
+        align-self: flex-end;
+        word-wrap: break-word;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Bot message box */
+      .bot__message {
+        background-color: #e1e1e1;
+        color: #333;
+        border-radius: 12px;
+        padding: 12px;
+        margin: 10px 0;
+        max-width: 75%;
+        align-self: flex-start;
+        word-wrap: break-word;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Input and button */
+      .chat__comment {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+      }
+
+      textarea {
+        width: 80%;
+        padding: 10px;
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        resize: none;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: #0084ff;
+        border: none;
+        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #005bb5;
+      }
+
+      /* Auto scroll */
+      .chat__list {
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        height: 350px;
+        overflow-y: auto;
+        background-color: #f7f7f7;
+      }
+    </style>
+    <!-- !Styles -->
+  </head>
+
+  <body>
+    <!-- MAIN WRAPPER -->
+    <div class="techwave_fn_wrapper fn__has_sidebar">
+      <div class="techwave_fn_wrap">
+        <!-- CONTENT -->
+        <div class="techwave_fn_content">
+          <!-- PAGE (all pages go inside this div) -->
+          <div class="techwave_fn_page">
+            <!-- AI Chat Bot Page -->
+            <div class="techwave_fn_aichatbot_page fn__chatbot">
+              <div class="chat__page">
+                <div class="fn__title_holder">
+                  <div class="container">
+                    <!-- Active chat title -->
+                    <h1 class="title">Chat Bot</h1>
+                    <!-- !Active chat title -->
+                  </div>
+                </div>
+
+                <div class="container">
+                  <div class="chat__list">
+                    <!-- Chat messages will be appended here -->
+                  </div>
+                </div>
+
+                <!-- Chat input area -->
+                <div class="chat__comment">
+                  <div class="container">
+                    <div class="fn__chat_comment">
+                      <textarea
+                        rows="1"
+                        placeholder="Enter symptoms..."
+                        id="fn__chat_textarea"
+                      ></textarea>
+                      <button id="sendMessageButton">
+                        <img src="svg/enter.svg" alt="send" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- !AI Chat Bot Page -->
+          </div>
+          <!-- !PAGE -->
+        </div>
+        <!-- !CONTENT -->
+      </div>
+    </div>
+    <!-- !MAIN WRAPPER -->
+
+    <script>
+      // Symptom-to-medicine mapping
+      const symptomMedicineMap = {
+        hi: "Hello! How may I help you?",
+        fever:
+          "Please take Sudarshan Ghan Vati and Giloy Satva for fever relief.",
+        cold: "Try Sitopaladi Churna with honey and Tulsi tea for cold relief.",
+        headache: "Use Ashwagandha Tablets and apply Brahmi Oil for relief.",
+        backPain: "Take Dashmool Kwath and Yograj Guggulu for back pain.",
+        constipation:
+          "Take Triphala Churna at bedtime for constipation relief.",
+        indigestion:
+          "Use Avipattikar Churna before meals to improve digestion.",
+        stress: "Ashwagandha and Brahmi Powder are great for stress relief.",
+        bodyPain: "Take Mahanarayan Oil for body pain relief.",
+        anxiety: "Take Brahmi or Ashwagandha for anxiety.",
+        insomnia: "Use Jatamansi and Ashwagandha for better sleep.",
+        acidity: "Take Amla and Isabgol for acidity relief.",
+        weightLoss: "Try Garcinia Cambogia or Guggulu tablets.",
+        nausea: "Ginger tea and lemon juice help relieve nausea.",
+        arthritis: "Take Guggulu and Ashwagandha for joint pain.",
+        asthma: "Try Sitopaladi Churna and turmeric for asthma relief.",
+        bloodPressure: "Take Arjuna bark powder and garlic for BP.",
+        diabetes: "Use Bitter melon and Gurmar for controlling blood sugar.",
+        liverDetox: "Take Bhumi Amla and Kutki for liver detox.",
+        kidneyStone: "Take Pashanbheda and Gokshura for kidney stone relief.",
+        gout: "Try Giloy and Guggulu for gout management.",
+        skinRashes: "Aloe Vera gel and Neem powder are effective.",
+        pimples: "Use turmeric and neem paste for acne and pimples.",
+        cough: "Tulsi tea and honey help treat cough.",
+        soreThroat: "Gargle with warm salt water for sore throat.",
+        hairLoss: "Apply Bhringraj oil and Amla powder for hair growth.",
+        dandruff: "Use neem oil and fenugreek paste to treat dandruff.",
+        fatigue: "Ashwagandha and Shatavari are good for fatigue.",
+        bloating: "Ajwain and Hing for bloating.",
+        highSugar: "Gurmar and Bitter Melon for high sugar.",
+        thyroidIssues: "Ashwagandha and Kachnar for thyroid problems.",
+        hairGrowth: "Bhringraj and Amla for hair growth.",
+        digestiveHealth: "Triphala and Licorice for digestive health.",
+        immuneBoost: "Giloy and Tulsi for immunity boost.",
+        sleepDisorder: "Jatamansi and Brahmi for better sleep.",
+        bloodCirculation: "Arjuna bark and Guggulu for circulation.",
+        detox: "Lemon juice and Aloe Vera for detox.",
+        liverHealth: "Kutki and Bhumi Amla for liver health.",
+        energyBoost: "Ashwagandha and Shatavari for energy.",
+        heartHealth: "Garlic and Arjuna for heart health.",
+        kidneyHealth: "Gokshura and Pashanbheda for kidney health.",
+        weightManagement: "Garcinia Cambogia for weight management.",
+        immunityBoost: "Amla and Giloy for immunity boost.",
+        ulcerHealing: "Triphala and Licorice for ulcers.",
+        stressRelief: "Ashwagandha and Brahmi for stress relief.",
+        depression: "Brahmi and Jatamansi for depression.",
+        hypertension: "Garlic and Arjuna for hypertension.",
+        tiredness: "Ashwagandha and Shatavari for tiredness.",
+        acne: "Neem and turmeric for acne.",
+        nauseaRelief: "Ginger and peppermint for nausea relief.",
+        coldRelief: "Sitopaladi Churna and Tulsi for cold.",
+        digestion: "Triphala and Amla for digestion.",
+
+        // 50 More Symptoms and Their Remedies
+        swelling: "Try using Triphala with warm water to reduce swelling.",
+        dizziness:
+          "Brahmi and Ashwagandha help with dizziness and mental clarity.",
+        eyePain: "Use Triphala eye wash and apply rose water for eye relief.",
+        dehydration: "Amla juice and coconut water can hydrate effectively.",
+        earPain: "Garlic oil and sesame oil help with ear infections.",
+        menstrualPain: "Take Ashoka and Dashmool Kwath for menstrual cramps.",
+        bloating: "Ajwain and Hing for bloating relief.",
+        nauseaDuringPregnancy:
+          "Ginger and cumin seeds help during pregnancy-related nausea.",
+        earInfection:
+          "Garlic oil and turmeric are effective for ear infections.",
+        mouthUlcers:
+          "Use Triphala and Aloe Vera gel for soothing mouth ulcers.",
+        excessiveSweating:
+          "Sage tea and neem leaves help reduce excessive sweating.",
+        skinDiscoloration:
+          "Neem and turmeric paste help lighten skin discoloration.",
+        psoriasis: "Use a mixture of turmeric and neem oil for psoriasis.",
+        eczema: "Aloe Vera and sandalwood powder are great for eczema.",
+        wrinkles: "Use Amla powder and coconut oil to fight wrinkles.",
+        prematureAging: "Brahmi and Amla are known to slow down aging.",
+        badBreath: "Neem, cardamom, and clove help with bad breath.",
+        mouthDryness:
+          "Use coriander seed powder or fennel seeds to prevent dryness.",
+        oralInfections:
+          "Neem and clove oil are known for their antibacterial properties.",
+        tinnitus: "Try using sesame oil and garlic to ease tinnitus.",
+        coughWithPhlegm: "Take Tulsi and honey for cough with phlegm.",
+        heartburn: "Triphala and aloe vera juice help with heartburn.",
+        indigestion: "Use Avipattikar Churna for indigestion.",
+        soreMuscles: "Mahanarayan Oil is great for sore muscles.",
+        urinaryTractInfection: "Gokshura and Punarnava help treat UTIs.",
+        jointPain: "Guggulu and Ashwagandha for joint pain relief.",
+        bleedingGums: "Use Neem and Clove oil to treat bleeding gums.",
+        poorCirculation:
+          "Arjuna bark powder is excellent for improving circulation.",
+        dizzinessOnStanding:
+          "Ginger tea and Ashwagandha can help with dizziness.",
+        coldFeet: "Massage with sesame oil to relieve cold feet.",
+        bloatingAfterMeals: "Try using Ajwain and Hing to prevent bloating.",
+        anxietyBeforeSleep:
+          "Ashwagandha and Brahmi are known to calm the nerves.",
+        coldHands: "Massage with mustard oil to help with cold hands.",
+        hotFlashes:
+          "Shatavari and Ashoka help with hot flashes during menopause.",
+        sinusInfection:
+          "Use Neti pot with saline and drink Tulsi tea for sinus.",
+        flatulence:
+          "Carom seeds (Ajwain) and ginger powder help reduce flatulence.",
+        liverEnlargement:
+          "Kutki and Bhumi Amla are useful for liver enlargement.",
+        waterRetention: "Gokshura and Punarnava help with water retention.",
+        highCholesterol: "Use Arjuna bark powder to lower cholesterol.",
+        lowAppetite: "Triphala and ginger tea help stimulate appetite.",
+        bloodInUrine: "Gokshura and Pashanbheda help with blood in urine.",
+        indigestionAfterSpicyFood:
+          "Take Amalaki Churna and buttermilk for indigestion.",
+        bladderIssues:
+          "Gokshura and Pashanbheda are helpful for bladder problems.",
+        pimplesOnFace: "Neem paste and turmeric powder are effective for acne.",
+        drySkin: "Aloe Vera and coconut oil help treat dry skin.",
+        allergicReactions: "Use turmeric and neem leaves to treat allergies.",
+        hormonalImbalance: "Shatavari and Ashoka help in balancing hormones.",
+        mouthBlisters: "Use Amla powder and Aloe Vera gel for blisters.",
+        poorMemory: "Brahmi and Ashwagandha are known to enhance memory.",
+        soreGums:
+          "Gargle with warm salt water and use Clove oil for sore gums.",
+        stomachBloating: "Ajwain and Hing are great for bloating relief.",
+        kidneyInfection: "Use Pashanbheda and Gokshura for kidney infections.",
+        // 50 More Symptoms and Their Remedies
+        eyeInfection: "Use Triphala water as an eye wash for infections.",
+        coughWithSputum: "Take Tulsi, Honey, and Ginger to clear phlegm.",
+        runnyNose:
+          "Try a saline nasal spray and Tulsi leaves for a runny nose.",
+        nauseaAfterEating: "Use ginger tea or fresh mint to calm the stomach.",
+        coldFeetAtNight: "Massage with warm sesame oil before sleep.",
+        dizzinessAfterStanding:
+          "Take Ashwagandha and ginger tea for dizziness.",
+        itchyScalp:
+          "Neem oil and Aloe Vera gel work wonders for an itchy scalp.",
+        throatDryness:
+          "Gargle with salt water and drink warm honey-lemon water.",
+        neckPain: "Use Mahanarayan Oil for neck pain and stiffness.",
+        constipationWithStomachPain:
+          "Triphala and Castor oil for constipation and pain relief.",
+        stomachCramps: "Ginger tea or Ajwain powder with warm water helps.",
+        facialPain:
+          "Use a warm compress with essential oils like clove or eucalyptus.",
+        heavyPeriods:
+          "Ashoka and Lodhra are excellent for heavy menstrual flow.",
+        poorConcentration: "Brahmi and Ginkgo Biloba help improve focus.",
+        jointSwelling: "Apply Mahanarayan Oil and take Guggulu tablets.",
+        bloatingAfterMeals:
+          "Ajwain, cumin, and fennel seeds are great for bloating.",
+        coldSore: "Apply turmeric paste or Aloe Vera gel for cold sores.",
+        throatInfection:
+          "Honey, ginger, and warm salt water are effective for throat infections.",
+        weakImmuneSystem: "Use Giloy and Amla to strengthen the immune system.",
+        burningMouth:
+          "Gargle with chamomile or aloe vera juice to soothe burning mouth.",
+        frequentUrination:
+          "Punarnava and Gokshura help manage frequent urination.",
+        coughWithChestPain:
+          "Take Sitopaladi Churna and turmeric for chest congestion.",
+        severeFatigue:
+          "Ashwagandha and Shatavari provide energy and reduce fatigue.",
+        headachesDuringPeriod:
+          "Use Shatavari and Ashwagandha to reduce period-related headaches.",
+        brittleNails: "Use Amla and coconut oil to strengthen nails.",
+        itchySkin: "Neem paste and turmeric powder for skin itching relief.",
+        swellingAroundEyes:
+          "Use cucumber slices and rose water to reduce eye swelling.",
+        lowBloodSugar:
+          "Bitter melon and Amla powder help manage low blood sugar.",
+        heartPalpitations:
+          "Arjuna and Ashwagandha help to control heart palpitations.",
+        sleepApnea:
+          "Jatamansi and Ashwagandha are good for improving sleep quality.",
+        rashOnSkin: "Use turmeric and sandalwood paste to treat skin rashes.",
+        frequentHeadaches: "Brahmi and Ashwagandha for recurring headaches.",
+        dizzinessOnTurningHead:
+          "Ginger and Brahmi can help reduce dizziness while turning.",
+        mouthDrynessAtNight:
+          "Hydrate with Amla juice and drink water with fennel seeds.",
+        digestiveIssuesAfterSpicyFood:
+          "Triphala and Avipattikar Churna are great after spicy meals.",
+        swollenFeet: "Gokshura and Punarnava help reduce swelling in the feet.",
+        excessiveSweatingAtNight:
+          "Sage tea and coriander seeds help manage night sweats.",
+        crampingLegs:
+          "Massage with sesame oil or take Ashwagandha for leg cramps.",
+        stomachIndigestion:
+          "Use ginger, cumin, and fennel to improve digestion.",
+        jawPain: "Clove oil and warm compress help alleviate jaw pain.",
+        tensionInShoulders:
+          "Mahanarayan Oil and Ashwagandha are effective for shoulder pain.",
+        coldOrFlu:
+          "Triphala and Tulsi leaves are great for cold and flu treatment.",
+        swollenGums:
+          "Gargle with warm salt water and use clove oil for swollen gums.",
+        dryCough: "Use honey, ginger, and turmeric for a dry cough.",
+        fluidRetention:
+          "Punarnava and Gokshura are known for reducing fluid retention.",
+        bloatingWithStomachAche:
+          "Ajwain and ginger tea can relieve bloating and stomach aches.",
+        hotFlashesDuringMenopause:
+          "Shatavari and Ashoka for managing hot flashes.",
+        digestiveWeakness: "Triphala and Amla are great for digestion issues.",
+        painInUpperBack:
+          "Dashmool Kwath and Mahanarayan Oil help relieve upper back pain.",
+        badAppetite: "Triphala and cumin powder for stimulating appetite.",
+        tendernessInBreast:
+          "Ashoka and Shatavari help relieve breast tenderness.",
+        muscleTwitching: "Magnesium-rich foods and Ashwagandha can help.",
+        swollenTonsils: "Gargle with warm salt water and take Tulsi tea.",
+        crackedHeels:
+          "Massage with coconut oil or a mixture of sesame oil and camphor.",
+        bloatingWithDiarrhea:
+          "Use Triphala Churna to regulate digestion and prevent bloating.",
+        sinusCongestion:
+          "Neti pot, steam inhalation with eucalyptus oil, and Tulsi tea.",
+        digestiveGas: "Ajwain and Hing powder for reducing digestive gas.",
+        hairDullness: "Use Bhringraj and Amla oil to restore hair health.",
+        emotionalExhaustion:
+          "Ashwagandha and Brahmi for emotional exhaustion relief.",
+        itchingAfterBath:
+          "Apply Aloe Vera gel or a mixture of turmeric and sandalwood powder.",
+        menstrualCramps: "Use Ashoka and Dashmool for menstrual cramps relief.",
+        swollenLymphNodes:
+          "Neem and turmeric are effective for lymphatic health.",
+        constantThirst:
+          "Amla juice and coconut water are good for constant thirst.",
+        redEyes: "Triphala water and rose water help soothe red eyes.",
+        muscleFatigue:
+          "Ashwagandha and Shatavari help recover from muscle fatigue.",
+        tensionInNeck: "Use Mahanarayan Oil for relief from neck tension.",
+        badTasteInMouth:
+          "Clove oil and coriander seeds can help with bad taste.",
+        dryCoughWithPhlegm:
+          "Sitopaladi Churna and honey help in clearing phlegm.",
+        constantYawning:
+          "Brahmi and Ashwagandha can help with excessive yawning.",
+        crampsInHands: "Massage with sesame oil and take magnesium-rich foods.",
+        crampsInFeet: "Apply mustard oil and take magnesium supplements.",
+        irregularSleep:
+          "Jatamansi and Brahmi help in regulating sleep patterns.",
+      };
+
+      // Handle sending and receiving messages
+      document.getElementById("sendMessageButton").onclick = function () {
+        const userInput = document
+          .getElementById("fn__chat_textarea")
+          .value.trim()
+          .toLowerCase();
+        const chatContainer = document.querySelector(".chat__list");
+
+        if (userInput) {
+          // User message
+          chatContainer.innerHTML += `
+            <div class="user__message">
+              <p>${userInput}</p>
+            </div>
+          `;
+
+          // Bot response
+          const response =
+            symptomMedicineMap[userInput] ||
+            "Sorry, I couldn't find a remedy for that symptom. Please consult a physician.";
+          chatContainer.innerHTML += `
+            <div class="bot__message">
+              <p>${response}</p>
+            </div>
+          `;
+
+          // Scroll to the bottom
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+
+          // Clear input
+          document.getElementById("fn__chat_textarea").value = "";
+        }
+      };
+
+      // Allow pressing Enter to send message
+      document
+        .getElementById("fn__chat_textarea")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            document.getElementById("sendMessageButton").click();
+          }
+        });
+    </script>
+  </body>
+</html>
