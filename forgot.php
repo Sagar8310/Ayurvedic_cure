@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<title>Forgot Password</title>
 	<link rel="stylesheet" type="text/css" href="stylesheet/forgot.css" />
-	<script type="text/javascript" src="scripts/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="scripts/jquery-1.11.http://localhost:3000/adminpanel.php0.min.js"></script>
 	<script type="text/javascript" src="scripts/effects.js"></script>
 </head>
 

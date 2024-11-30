@@ -1,19 +1,15 @@
+
 @charset "utf-8";
 
-/* Root variables for consistent design */
 :root {
     --primary-color: #2c3e50;
     --secondary-color: #3498db;
-    --accent-color: #1abc9c;
-    --background-color: #f9fafb;
+    --background-color: #f4f6f7;
     --text-color: #333;
     --white: #ffffff;
-    --border-color: #ddd;
     --transition-speed: 0.3s;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Reset styles */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -21,43 +17,44 @@
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
+    user-select: none;
+    max-width: 100%;
+    min-width: 320px;
 }
 
-/* Header styles */
+
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
+    padding: 15px 50px;
     background-color: var(--white);
-    box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .HeaderTitle img {
-    max-width: 60px;
+    max-width: 70px;
     height: auto;
 }
 
 nav ul {
-    list-style: none;
     display: flex;
+    list-style: none;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 nav ul li a {
     text-decoration: none;
     color: var(--primary-color);
     font-weight: 500;
-    padding: 10px 15px;
+    padding: 8px 12px;
     border-radius: 5px;
-    transition: background-color var(--transition-speed);
+    transition: all var(--transition-speed) ease;
 }
 
 nav ul li a:hover {
@@ -65,72 +62,16 @@ nav ul li a:hover {
     color: var(--white);
 }
 
-/* Status bar styling */
-.full_status {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
+hr {
+    border: none;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    margin: 10px 0;
 }
 
-.status {
-    display: flex;
-    align-items: center;
-    background-color: var(--accent-color);
-    color: var(--white);
-    border-radius: 8px;
-    padding: 10px 20px;
-    box-shadow: var(--shadow);
-}
-
-.status_image img {
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    object-fit: cover;
-    margin-right: 15px;
-}
-
-.status_name {
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-/* Heading styles */
-.heading h1 {
-    text-align: center;
-    font-size: 2rem;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    font-weight: 700;
-}
-
-/* Notification banner */
-.notify {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--secondary-color);
-    color: var(--white);
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: var(--shadow);
-    margin: 20px auto;
-    max-width: 500px;
-    position: relative;
-}
-
-.notify .cross {
-    position: absolute;
-    right: 15px;
-    font-size: 18px;
-    cursor: pointer;
-}
-/* Full Status */
 .full_status {
     display: flex;
     justify-content: flex-end;
-    padding: 0px 60px;
+    padding: 10px 50px;
 }
 
 .status {
@@ -139,38 +80,42 @@ nav ul li a:hover {
     background-color: var(--primary-color);
     color: var(--white);
     border-radius: 10px;
-    padding: 12px;
-    max-width: 320px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    max-width: 300px;
 }
 
 .status_image img {
     border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     object-fit: cover;
-    margin-right: 12px;
+    margin-right: 10px;
 }
 
 .status_name {
     font-weight: 500;
 }
 
-.notify .cross {
-    position: absolute;
-    right: -7px;
-    font-size: 17px;
-    cursor: pointer;
+.heading {
+    text-align: center;
+    margin: 30px 0;
 }
+
+.heading h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
 .cross {
 	width:28px;
-	height:23px;
+	height:34px;
 	margin-top:10px;
 	margin-bottom:10px;
 	margin-right:10px;
 	float:right;
 	text-align:center;
-	padding-top:0px;
+	padding-top:5px;
 	border: 1px solid #000;
 	border-radius:20px;
 	cursor:pointer;
@@ -194,8 +139,8 @@ nav ul li a:hover {
 	font-size:16px;
 	font-weight:bold;
 	color:#fff;
-	text-align:normal;
-	padding-top:3px;
+	text-align:center;
+	padding-top:15px;
 }
 .cross:hover {
 	background-color:#32525D;

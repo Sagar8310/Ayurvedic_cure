@@ -86,8 +86,8 @@ if (loggedin()) {
 							<tr>
 								<td>Profile Picture</td>
 								<td>
-									<div class="FormElement1" style="height:200px; width:200px"><img
-											src="<?php echo $visitor_photo; ?>" width="200" height="200"></div>
+									<div class="FormElement1" style="height:150px; width:200px"><img
+											src="<?php echo $visitor_photo; ?>" width="100" height="100"></div>
 								</td>
 							</tr>
 							<tr>
